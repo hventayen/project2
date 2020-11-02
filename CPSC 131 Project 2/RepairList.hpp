@@ -10,7 +10,7 @@ using std::ifstream;
 
 
 class RepairList {
-	
+
 	// Friend functions: read and write
 	friend std::ostream & operator<<( std::ostream & stream, const RepairList & repairlist );
 	friend std::istream & operator>>( std::istream & stream, RepairList & repairlist );
@@ -20,18 +20,18 @@ private:
 	// Data members are already provided
 	std::list<Repair> _dailyList;
 	std::list<Repair>::iterator _nowServicing;
-	
+
 public:
-    
+
 	/*************************************
 	**  Following functions already done
 	**************************************/
 	RepairList() = default;  // default constructor
-	
+
 	RepairList( const RepairList & other ) = default; // copy constructor
 	RepairList( RepairList && other ) = default; // move constructor
 	RepairList & operator=(const RepairList& rhs ) = default; // assignment operator
-	
+
 	~RepairList() = default; // destructor
 
 	void loadAdvanceList(const std::string& filename); // read from a file
@@ -41,7 +41,7 @@ public:
 	**************************************/
 	std::size_t size() const; // TO DO
 	// returns the number of repair requests in the list
-	
+
 	Repair currRepair() const; // TO DO
 	// returns the current repair request
 
@@ -54,11 +54,11 @@ public:
 	void addToList(const Repair& newRequest); // TO DO
 	// append a new repair request to the end of the list
 
-	void insertLoyal(const Repair& newRequest); // TO DO 
-	// insert a new repair request in the current position of the list 
-	
+	void insertLoyal(const Repair& newRequest); // TO DO
+	// insert a new repair request in the current position of the list
 
-}; 
+
+};
 
 
 /**********************************************************
@@ -98,7 +98,7 @@ void RepairList::loadAdvanceList(const std::string& filename)
 			addToList(newRequest);
 		}
 
-		inFile.close();  // file closes 
+		inFile.close();  // file closes
 		_nowServicing = _dailyList.begin();
 	}
 	else
@@ -117,21 +117,21 @@ void RepairList::loadAdvanceList(const std::string& filename)
 
 std::size_t RepairList::size() const
 {
-	
+	return _dailyList.size();
 }
 
 // TO DO
 // return the current repair
 Repair RepairList::currRepair() const
 {
-	
+	return *_nowServicing;
 }
 
 // TO DO
 // the current repair has been serviced so move the iterator to the next request
 void RepairList::next()
 {
-			
+	_nowServicing++;
 }
 
 // TO DO
@@ -139,7 +139,7 @@ void RepairList::next()
 
 void RepairList::prev()
 {
-	
+	_nowServicing--;
 }
 
 
@@ -147,14 +147,23 @@ void RepairList::prev()
 // add a repair request to the current list
 void RepairList::addToList(const Repair& newRequest)
 {
-		
+	_dailyList.push_back(newRequest);
 }
 
 // TO DO
-// insert a repair request coming from a loyal customer 
+// insert a repair request coming from a loyal customer
 // right after the current iterator but do not make
 // changes to the current iterator
 void RepairList::insertLoyal(const Repair& newRequest)
 {
-	
+	std::list<Repair>::iterator iterator = _nowServicing;
+	if (iterator != _dailyList.end())
+	{
+		iterator++;
+		_dailyList.insert(iterator, newRequest);
+	}
+	else
+	{
+		addToList(newRequest);
+	}
 }
